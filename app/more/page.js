@@ -10,7 +10,7 @@ import "slick-carousel/slick/slick-theme.css";
 export default function More() {
   const playlist = [
     { name: "Floricienta - Flores Amarillas", file: "/audio/floresamarillas.mp3" },
-    { name: "Café Tacvba - Quiero Ver", file: "/audio/quierover.mp3" },
+    { name: "Jarabe de Palo - Agua", file: "/audio/agua.mp3" },
     { name: "Kalimba - Se te olvido", file: "/audio/seteolvido.mp3" },
     { name: "Bruno Mars - When I Was Your Man", file: "/audio/bruno.mp3" },
   ];
@@ -20,14 +20,21 @@ export default function More() {
   const [darkMode, setDarkMode] = useState(false);
   const audioRef = useRef(null);
 
+  // Avanza a la siguiente canción al terminar
   const handleEnded = () => {
-    setCurrentSong((currentSong + 1) % playlist.length);
+    setCurrentSong((prev) => (prev + 1) % playlist.length);
   };
 
+  // Reproduce automáticamente al cambiar de canción
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.load();
-      audioRef.current.play().catch(() => {});
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          // manejo de error silencioso si autoplay falla
+          console.log("Autoplay bloqueado", error);
+        });
+      }
     }
   }, [currentSong]);
 
@@ -64,13 +71,11 @@ export default function More() {
         {/* Título */}
         <div className="text-center mt-10">
           <h1 className="text-5xl font-extrabold mb-4 text-white drop-shadow-lg tracking-wide">
-            🌹🌹🌹 Feliz 21 de Septiembre 🌹🌹🌹
+            🎈🎈🎈 Feliz 21 de Septiembre 🎈🎈🎈
           </h1>
-          <p className="text-2xl italic text-white drop-shadow-md">
-            💌 Para mi amada GabyLove 💌
-          </p>
-          <br></br>    
-              </div>
+          <p className="text-2xl italic text-white drop-shadow-md">😃💖Con amor..</p>
+          <br />
+        </div>
 
         {/* Reproductor de música */}
         <div
@@ -160,10 +165,8 @@ export default function More() {
               darkMode ? "text-white" : ""
             }`}
           >
-            Con todo mi amor..<br />
-            Hoy quiero recordarte lo mucho que te amo. <br /> Eres mi esposita, mi compañera, mi amor, la mamá más increíble de nuestra hijita preciosa.<br /> Gracias por llenar nuestra vida de amor, alegría y momentos hermosos.
-            <br />
-            Feliz día del amor, mi vida. <br />Te amo con todo mi corazón, hoy y siempre. 💖
+            Hey, Eres de esas personas que deberían tener su propio premio por ser increíble😎✨ <br />
+            Gracias por la amistad, las risas y hasta por aguantarme. 💖😄
           </p>
         </div>
 
@@ -198,6 +201,15 @@ export default function More() {
                   className="w-full h-full object-cover"
                 />
               </div>
+              <div className="w-full h-full">
+                <Image
+                  src="/images/photo4.jpg"
+                  alt="Recuerdo 4"
+                  width={800}
+                  height={800}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </Slider>
           </div>
         </div>
@@ -212,7 +224,7 @@ export default function More() {
 
         {/* Footer */}
         <footer className="bg-gray-800 text-white text-center py-4 w-full">
-          developer <span className="font-bold">LAAT</span>
+          By: dev<span className="font-bold">LAAT</span>
         </footer>
       </div>
     </div>

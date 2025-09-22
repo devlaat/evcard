@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Para GabyLove",
-  description: "Hecho con ❤️ en Next.js developerLAAT",
+  title: "sep21 - devLAAT",
+  description: "Hecho con ❤️ en Next.js",
 };
 
 export default function RootLayout({ children }) {
