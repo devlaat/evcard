@@ -6,12 +6,11 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
-// 🌼 Componente de la flor (optimizado)
+// 🌼 Modelo 3D optimizado
 function FlowerModel() {
   const { scene } = useGLTF("/models/flower.glb");
   const groupRef = useRef();
 
-  // Centrar y escalar (memoizado para evitar cálculos repetidos)
   const optimizedScene = useMemo(() => {
     if (scene) {
       const box = new THREE.Box3().setFromObject(scene);
@@ -21,29 +20,29 @@ function FlowerModel() {
       box.getCenter(center);
       scene.position.sub(center);
 
+      // 📱 Escala distinta para mobile / desktop
       const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = window.innerWidth < 768 ? 15 / maxDim : 8 / maxDim;
+      const scale = window.innerWidth < 640 ? 10 / maxDim : 6 / maxDim;
       scene.scale.set(scale, scale, scale);
     }
     return scene;
   }, [scene]);
 
-  // Rotación más fluida
-  useFrame((state) => {
+  useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.01; // Rotación constante y ligera
+      groupRef.current.rotation.y += 0.01;
     }
   });
 
   return <primitive ref={groupRef} object={optimizedScene} />;
 }
 
-// 📸 Cámara adaptable
+// 📸 Cámara responsiva
 function ResponsiveCamera() {
   const { camera } = useThree();
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      camera.position.set(0, 0, 4);
+    if (window.innerWidth < 640) {
+      camera.position.set(0, 0.5, 4);
       camera.fov = 55;
     } else {
       camera.position.set(0, 1, 6);
@@ -60,12 +59,11 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Usar requestAnimationFrame para un progreso más fluido
     let start = null;
     const animateProgress = (timestamp) => {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
-      const newProgress = Math.min((elapsed / 3000) * 100, 100); // 3 segundos para llegar al 100%
+      const newProgress = Math.min((elapsed / 2000) * 100, 100);
       setProgress(newProgress);
       if (newProgress < 100) {
         requestAnimationFrame(animateProgress);
@@ -78,8 +76,10 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-fuchsia-500 text-white">
-        <h1 className="text-2xl font-bold mb-4">Cargando campo de flores...</h1>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-fuchsia-500 text-white text-center px-4">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">
+          Cargando campo de flores...
+        </h1>
         <p className="text-lg">{Math.round(progress)}%</p>
       </div>
     );
@@ -87,7 +87,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Fondo desenfocado */}
+      {/* Fondo */}
       <div
         className="absolute inset-0"
         style={{
@@ -95,17 +95,15 @@ export default function Home() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          filter: "blur(5px)", // Reducir el desenfoque para mejorar el rendimiento
+          filter: "blur(4px)",
         }}
       />
 
-      {/* Canvas 3D encima del fondo */}
+      {/* Canvas 3D */}
       <Canvas
-        shadows={false} // Desactivar sombras para mejorar el rendimiento
-        dpr={[1, 1.5]} // Reducir la calidad en dispositivos de baja resolución
         camera={{ position: [0, 1, 6], fov: 45 }}
+        dpr={[1, 1.5]}
         style={{ position: "absolute", inset: 0 }}
-        gl={{ alpha: true }}
       >
         <Suspense fallback={<ambientLight intensity={0.5} />}>
           <ResponsiveCamera />
@@ -116,11 +114,11 @@ export default function Home() {
         </Suspense>
       </Canvas>
 
-      {/* Contenido encima del Canvas */}
-      <div className="relative flex flex-col items-center justify-end min-h-screen pb-10">
+      {/* Contenido */}
+      <div className="relative flex flex-col items-center justify-end min-h-screen pb-6 sm:pb-10">
         <Link
           href="/more"
-          className="px-6 py-3 bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition"
+          className="px-4 sm:px-6 py-2 sm:py-3 bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition text-sm sm:text-base"
         >
           Click me
         </Link>
