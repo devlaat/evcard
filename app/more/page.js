@@ -69,7 +69,8 @@ export default function More() {
           <p className="text-2xl italic text-white drop-shadow-md">
             💌 Para mi amada GabyLove 💌
           </p>
-        </div>
+          <br></br>    
+              </div>
 
         {/* Reproductor de música */}
         <div

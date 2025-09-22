@@ -6,7 +6,7 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
-// 🌼 Modelo 3D optimizado
+// 🌼 Modelo 3D optimizado con animación combinada
 function FlowerModel() {
   const { scene } = useGLTF("/models/flower.glb");
   const groupRef = useRef();
@@ -20,7 +20,7 @@ function FlowerModel() {
       box.getCenter(center);
       scene.position.sub(center);
 
-      // 📱 Escala distinta para mobile / desktop
+      // Escala según dispositivo
       const maxDim = Math.max(size.x, size.y, size.z);
       const scale = window.innerWidth < 640 ? 10 / maxDim : 6 / maxDim;
       scene.scale.set(scale, scale, scale);
@@ -28,9 +28,22 @@ function FlowerModel() {
     return scene;
   }, [scene]);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (groupRef.current) {
+      const t = state.clock.elapsedTime;
+
+      // Rotación constante
       groupRef.current.rotation.y += 0.01;
+
+      // Oscilación tipo viento
+      groupRef.current.rotation.x = Math.sin(t * 0.5) * 0.05;
+
+      // Flotación vertical
+      groupRef.current.position.y = Math.sin(t) * 0.1;
+
+      // "Respiración" (cambia el tamaño suavemente)
+      const scale = 1 + Math.sin(t * 2) * 0.015;
+      groupRef.current.scale.set(scale, scale, scale);
     }
   });
 
@@ -42,10 +55,10 @@ function ResponsiveCamera() {
   const { camera } = useThree();
   useEffect(() => {
     if (window.innerWidth < 640) {
-      camera.position.set(0, 0.5, 4);
+      camera.position.set(0, 1, 4); // sube un poco en móviles
       camera.fov = 55;
     } else {
-      camera.position.set(0, 1, 6);
+      camera.position.set(0, 1.5, 6);
       camera.fov = 45;
     }
     camera.updateProjectionMatrix();
@@ -86,7 +99,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative flex flex-col items-center justify-center">
       {/* Fondo */}
       <div
         className="absolute inset-0"
@@ -101,7 +114,7 @@ export default function Home() {
 
       {/* Canvas 3D */}
       <Canvas
-        camera={{ position: [0, 1, 6], fov: 45 }}
+        camera={{ position: [0, 1.5, 6], fov: 45 }}
         dpr={[1, 1.5]}
         style={{ position: "absolute", inset: 0 }}
       >
@@ -114,11 +127,11 @@ export default function Home() {
         </Suspense>
       </Canvas>
 
-      {/* Contenido */}
-      <div className="relative flex flex-col items-center justify-end min-h-screen pb-6 sm:pb-10">
+      {/* Contenedor del modelo + botón */}
+      <div className="relative flex flex-col items-center justify-center z-10 mt-[40vh] sm:mt-[35vh]">
         <Link
           href="/more"
-          className="px-4 sm:px-6 py-2 sm:py-3 bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition text-sm sm:text-base"
+          className="px-4 sm:px-6 py-2 sm:py-3 bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition text-sm sm:text-base mt-6"
         >
           Click me
         </Link>
