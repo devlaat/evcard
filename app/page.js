@@ -133,8 +133,7 @@ export default function Home() {
           href="/more"
           className="px-4 sm:px-6 py-2 sm:py-3 bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition text-sm sm:text-base mt-6"
         >
-          Click me
-        </Link>
+          Tócame✨        </Link>
       </div>
     </div>
   );
