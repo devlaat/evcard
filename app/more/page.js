@@ -10,9 +10,9 @@ import "slick-carousel/slick/slick-theme.css";
 export default function More() {
   const playlist = [
     { name: "Floricienta - Flores Amarillas", file: "/audio/floresamarillas.mp3" },
-    { name: "Jarabe de Palo - Agua", file: "/audio/agua.mp3" },
-    { name: "Kalimba - Se te olvido", file: "/audio/seteolvido.mp3" },
-    { name: "Bruno Mars - When I Was Your Man", file: "/audio/bruno.mp3" },
+    { name: "Bella Dosis - Paciente 16", file: "/audio/paciente16.mp3" },
+    { name: "Charles Ans - Andromeda", file: "/audio/andromeda.mp3" },
+    { name: "Ocacional Talento - Buen Tipo", file: "/audio/ocacional.mp3" },
   ];
 
   const [currentSong, setCurrentSong] = useState(0);
