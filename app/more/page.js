@@ -208,6 +208,15 @@ export default function More() {
                   className="w-full h-full object-cover"
                 />
               </div>
+              <div className="w-full h-full">
+                <Image
+                  src="/images/photo5.jpg"
+                  alt="Recuerdo 4"
+                  width={800}
+                  height={800}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </Slider>
           </div>
         </div>
