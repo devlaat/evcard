@@ -11,7 +11,7 @@ export default function More() {
   const playlist = [
     { name: "Floricienta - Flores Amarillas", file: "/audio/floresamarillas.mp3" },
     { name: "Bella Dosis - Paciente 16", file: "/audio/paciente16.mp3" },
-    { name: "Charles Ans - Andromeda", file: "/audio/andromeda.mp3" },
+    { name: "Charles Ans - Andrómeda", file: "/audio/andromeda.mp3" },
     { name: "Ocacional Talento - Buen Tipo", file: "/audio/ocacional.mp3" },
   ];
 
@@ -71,10 +71,8 @@ export default function More() {
         {/* Título */}
         <div className="text-center mt-10">
           <h1 className="text-5xl font-extrabold mb-4 text-white drop-shadow-lg tracking-wide">
-            🎈🎈🎈 Feliz 21 de Septiembre 🎈🎈🎈
+            🎈🎈🎈 Feliz 14 de febrero 🎈🎈🎈
           </h1>
-          <p className="text-2xl italic text-white drop-shadow-md">😃💖Con amor..</p>
-          <br />
         </div>
 
         {/* Reproductor de música */}
@@ -224,7 +222,7 @@ export default function More() {
 
         {/* Footer */}
         <footer className="bg-gray-800 text-white text-center py-4 w-full">
-          By: dev<span className="font-bold">LAAT</span>
+          😃💖Con amor.. dev<span className="font-bold">LAAT💻🚀</span>
         </footer>
       </div>
     </div>
