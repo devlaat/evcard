@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "sep21 - devLAAT",
+  title: "Para EVlove --->devLAAT",
   description: "Hecho con ❤️ en Next.js",
 };
 
