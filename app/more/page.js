@@ -17,13 +17,8 @@ export default function More() {
 
   const [currentSong, setCurrentSong] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const audioRef = useRef(null);
-  const [seconds, setSeconds] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => setSeconds((s) => s + 1), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const handleEnded = () => {
     setCurrentSong((prev) => (prev + 1) % playlist.length);
@@ -38,7 +33,7 @@ export default function More() {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 900,
+    speed: 1200,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
@@ -46,146 +41,188 @@ export default function More() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-pink-500 via-red-400 to-fuchsia-600 flex flex-col items-center">
-
-      {/* Corazones flotantes */}
-      <div className="absolute inset-0 pointer-events-none">
+    <div
+      className={`min-h-screen relative overflow-hidden ${
+        darkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
+      {/* 💖 Love Particles */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         {[...Array(25)].map((_, i) => (
           <span
             key={i}
-            className="absolute text-white opacity-20 animate-float"
+            className="absolute text-pink-400 opacity-70 animate-float"
             style={{
               left: `${Math.random() * 100}%`,
-              fontSize: `${Math.random() * 24 + 10}px`,
-              animationDelay: `${Math.random() * 5}s`,
+              fontSize: `${Math.random() * 25 + 15}px`,
+              animationDuration: `${Math.random() * 10 + 8}s`,
             }}
           >
-            💖
+            ❤️
           </span>
         ))}
       </div>
 
-      {/* CONTENIDO */}
-      <div className="relative z-10 w-full max-w-5xl px-4">
+      {/* Fondo */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: "url('/campo.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "brightness(0.55)",
+        }}
+      />
 
-        {/* Título */}
-        <h1 className="text-center text-5xl md:text-6xl font-extrabold text-white drop-shadow-xl mt-10 mb-6">
-          💘 Feliz 14 de Febrero 💘
+      <div className="relative z-10 flex flex-col items-center">
+
+        {/* Header */}
+        <h1 className="mt-12 text-center text-5xl md:text-6xl font-extrabold text-white drop-shadow-xl tracking-wider">
+          💖 Feliz 14 de Febrero 💖
         </h1>
+        <p className="mt-4 text-white text-lg opacity-90 italic">
+          Un detalle hecho con cariño, música y recuerdos ✨
+        </p>
 
-        {/* Tarjeta Glass */}
-        <div className="backdrop-blur-xl bg-white/20 rounded-3xl shadow-2xl p-8 mb-10 border border-white/30">
-
-          {/* CONTADOR */}
-          <p className="text-center text-white text-lg mb-6">
-            ⏳ Compartiendo momentos desde hace <b>{seconds}</b> segundos 💞
+        {/* Player */}
+        <div className="mt-10 w-full max-w-xl backdrop-blur-xl bg-white/20 rounded-3xl p-6 shadow-2xl">
+          <p className="text-center text-white text-xl mb-4 font-semibold">
+            🎵 Sonando ahora:
+            <br />
+            <span className="italic">{playlist[currentSong].name}</span>
           </p>
 
-          {/* REPRODUCTOR */}
-          <div className="bg-white/80 rounded-2xl p-6 shadow-lg mb-8">
-            <p className="text-center text-xl font-semibold mb-4">
-              🎶 {playlist[currentSong].name}
-            </p>
+          <audio
+            ref={audioRef}
+            src={playlist[currentSong].file}
+            autoPlay
+            controls
+            muted={muted}
+            onEnded={handleEnded}
+            className="w-full rounded-xl mb-6"
+          />
 
-            <audio
-              ref={audioRef}
-              src={playlist[currentSong].file}
-              controls
-              muted={muted}
-              className="w-full mb-4"
-              onEnded={handleEnded}
-            />
+          <div className="flex justify-center gap-4 mb-6">
+            <button
+              onClick={() =>
+                setCurrentSong((currentSong - 1 + playlist.length) % playlist.length)
+              }
+              className="btn-primary"
+            >
+              ⏮
+            </button>
 
-            <div className="flex justify-center gap-4 flex-wrap">
-              <button
-                onClick={() =>
-                  setCurrentSong((currentSong - 1 + playlist.length) % playlist.length)
-                }
-                className="btn"
-              >
-                ⏮ Anterior
-              </button>
+            <button
+              onClick={() => setMuted(!muted)}
+              className="btn-secondary"
+            >
+              {muted ? "🔊" : "🔇"}
+            </button>
 
-              <button
-                onClick={() => setMuted(!muted)}
-                className="btn"
-              >
-                {muted ? "🔊 Activar" : "🔇 Silenciar"}
-              </button>
-
-              <button
-                onClick={() => setCurrentSong((currentSong + 1) % playlist.length)}
-                className="btn"
-              >
-                Siguiente ⏭
-              </button>
-            </div>
+            <button
+              onClick={() => setCurrentSong((currentSong + 1) % playlist.length)}
+              className="btn-primary"
+            >
+              ⏭
+            </button>
           </div>
 
-          {/* MENSAJE */}
-          <div className="bg-pink-100/90 rounded-2xl p-6 text-center shadow-md">
-            <p className="text-lg italic text-gray-800 leading-relaxed">
-              Hay personas que no llegan a tu vida por casualidad…  
-              llegan para quedarse, para sumar, para enseñarte que la amistad también
-              puede ser un regalo increíble.  
-              <br /><br />
-              Gracias por cada risa, cada locura y cada momento compartido 💕  
-              Hoy y siempre, esto es solo un pequeño recordatorio de lo especial que eres ✨
-            </p>
-          </div>
-        </div>
-
-        {/* CARRUSEL */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-10">
-          <Slider {...settings}>
-            {[1,2,3,4,5].map((n) => (
-              <Image
-                key={n}
-                src={`/images/photo${n}.jpg`}
-                alt={`Recuerdo ${n}`}
-                width={900}
-                height={900}
-                className="w-full h-[500px] object-cover"
-              />
+          <ul className="space-y-2">
+            {playlist.map((song, index) => (
+              <li
+                key={index}
+                onClick={() => setCurrentSong(index)}
+                className={`cursor-pointer text-center py-2 rounded-lg transition ${
+                  index === currentSong
+                    ? "bg-pink-600 text-white font-bold"
+                    : "text-white hover:bg-white/20"
+                }`}
+              >
+                {index === currentSong ? "▶ " : ""} {song.name}
+              </li>
             ))}
-          </Slider>
+          </ul>
         </div>
 
-        {/* BOTÓN */}
+        {/* Mensaje PRO */}
+        <div className="mt-12 max-w-2xl backdrop-blur-xl bg-white/20 rounded-3xl p-8 shadow-2xl">
+          <p className="text-white text-lg leading-relaxed text-center italic">
+            Hay personas que no necesitan fechas para ser especiales…  
+            pero hoy es la excusa perfecta para recordarte lo increíble que eres 💖  
+            <br /><br />
+            Gracias por existir, por las risas, los silencios cómodos  
+            y por hacer que lo simple se sienta extraordinario ✨
+          </p>
+        </div>
+
+        {/* Carrusel */}
+        <div className="mt-12 w-full max-w-2xl">
+          <div className="rounded-3xl overflow-hidden shadow-2xl">
+            <Slider {...settings}>
+              {[1,2,3,4,5].map((i) => (
+                <div key={i} className="h-[500px]">
+                  <Image
+                    src={`/images/photo${i}.jpg`}
+                    alt={`Recuerdo ${i}`}
+                    width={800}
+                    height={800}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </div>
+
+        {/* Botón */}
         <Link
           href="/"
-          className="inline-block mb-10 px-8 py-4 bg-white text-fuchsia-600 font-bold rounded-full shadow-lg hover:scale-105 transition"
+          className="mt-12 mb-10 px-8 py-3 rounded-full bg-pink-600 text-white font-bold shadow-lg hover:scale-105 transition"
         >
-          ⬅ Volver al inicio
+          Volver al inicio 💫
         </Link>
 
-        <footer className="text-white text-center mb-6 opacity-90">
-          💖 Hecho con amor por <b>devLAAT 🚀</b>
+        {/* Footer */}
+        <footer className="w-full text-center py-4 bg-black/60 text-white">
+          Hecho con 💖 por <span className="font-bold">devLAAT 🚀</span>
         </footer>
       </div>
 
-      {/* Animación */}
+      {/* Animaciones */}
       <style jsx>{`
-        .btn {
-          padding: 12px 20px;
-          background: linear-gradient(to right, #ec4899, #ef4444);
-          color: white;
-          border-radius: 999px;
-          font-weight: bold;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-          transition: transform 0.2s;
-        }
-        .btn:hover {
-          transform: scale(1.08);
-        }
-        @keyframes float {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(-120vh); }
-        }
         .animate-float {
-          animation: float 12s linear infinite;
+          animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+          from {
+            transform: translateY(110vh);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(-10vh);
+            opacity: 1;
+          }
+        }
+        .btn-primary {
+          padding: 12px 18px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #ec4899, #db2777);
+          color: white;
+          font-size: 20px;
+          box-shadow: 0 10px 25px rgba(236,72,153,.5);
+          transition: transform .2s;
+        }
+        .btn-primary:hover {
+          transform: scale(1.1);
+        }
+        .btn-secondary {
+          padding: 12px 18px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #22c55e, #16a34a);
+          color: white;
+          font-size: 18px;
         }
       `}</style>
     </div>
   );
-    }
+          }
