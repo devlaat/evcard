@@ -17,223 +17,175 @@ export default function More() {
 
   const [currentSong, setCurrentSong] = useState(0);
   const [muted, setMuted] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const audioRef = useRef(null);
+  const [seconds, setSeconds] = useState(0);
 
-  // Avanza a la siguiente canción al terminar
+  useEffect(() => {
+    const timer = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const handleEnded = () => {
     setCurrentSong((prev) => (prev + 1) % playlist.length);
   };
 
-  // Reproduce automáticamente al cambiar de canción
   useEffect(() => {
     if (audioRef.current) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          // manejo de error silencioso si autoplay falla
-          console.log("Autoplay bloqueado", error);
-        });
-      }
+      audioRef.current.play().catch(() => {});
     }
   }, [currentSong]);
 
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000,
+    speed: 900,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2500,
+    autoplaySpeed: 2800,
   };
 
   return (
-    <div
-      className={`min-h-screen relative flex flex-col items-center justify-between ${
-        darkMode ? "bg-gray-900" : "bg-white"
-      }`}
-    >
-      {/* Imagen de fondo */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url('/campo.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          filter: "brightness(0.6)",
-        }}
-      ></div>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-pink-500 via-red-400 to-fuchsia-600 flex flex-col items-center">
 
-      {/* Contenido principal */}
-      <div className="relative z-10 w-full flex flex-col items-center justify-between">
+      {/* Corazones flotantes */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(25)].map((_, i) => (
+          <span
+            key={i}
+            className="absolute text-white opacity-20 animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 24 + 10}px`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          >
+            💖
+          </span>
+        ))}
+      </div>
+
+      {/* CONTENIDO */}
+      <div className="relative z-10 w-full max-w-5xl px-4">
+
         {/* Título */}
-        <div className="text-center mt-10">
-          <h1 className="text-5xl font-extrabold mb-4 text-white drop-shadow-lg tracking-wide">
-            🎈🎈🎈 Feliz 14 de febrero 🎈🎈🎈
-          </h1>
-        </div>
+        <h1 className="text-center text-5xl md:text-6xl font-extrabold text-white drop-shadow-xl mt-10 mb-6">
+          💘 Feliz 14 de Febrero 💘
+        </h1>
 
-        {/* Reproductor de música */}
-        <div
-          className={`mb-6 w-full flex flex-col items-center p-6 rounded-2xl shadow-lg max-w-xl ${
-            darkMode
-              ? "bg-gray-800"
-              : "bg-gradient-to-r from-pink-300 via-red-300 to-yellow-300 bg-opacity-80"
-          }`}
-        >
-          <p
-            className={`text-xl font-semibold mb-4 text-center ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            🎵 Reproduciendo:<br />
-            <span className="italic">{playlist[currentSong].name}</span>
+        {/* Tarjeta Glass */}
+        <div className="backdrop-blur-xl bg-white/20 rounded-3xl shadow-2xl p-8 mb-10 border border-white/30">
+
+          {/* CONTADOR */}
+          <p className="text-center text-white text-lg mb-6">
+            ⏳ Compartiendo momentos desde hace <b>{seconds}</b> segundos 💞
           </p>
 
-          <audio
-            ref={audioRef}
-            src={playlist[currentSong].file}
-            autoPlay
-            controls
-            muted={muted}
-            className="w-full mb-6 rounded-lg shadow-md"
-            onEnded={handleEnded}
-          />
+          {/* REPRODUCTOR */}
+          <div className="bg-white/80 rounded-2xl p-6 shadow-lg mb-8">
+            <p className="text-center text-xl font-semibold mb-4">
+              🎶 {playlist[currentSong].name}
+            </p>
 
-          {/* Botones de control */}
-          <div className="flex gap-6 mb-6">
-            <button
-              onClick={() =>
-                setCurrentSong((currentSong - 1 + playlist.length) % playlist.length)
-              }
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-full shadow-lg hover:scale-105 transition-transform"
-            >
-              Anterior
-            </button>
+            <audio
+              ref={audioRef}
+              src={playlist[currentSong].file}
+              controls
+              muted={muted}
+              className="w-full mb-4"
+              onEnded={handleEnded}
+            />
 
-            <button
-              onClick={() => setMuted(!muted)}
-              className={`px-6 py-3 ${
-                muted
-                  ? "bg-gradient-to-r from-gray-400 to-gray-600"
-                  : "bg-gradient-to-r from-green-500 to-green-700"
-              } text-white font-bold rounded-full shadow-lg hover:scale-105 transition-transform`}
-            >
-              {muted ? "🔊 Activar sonido" : "🔇 Silenciar"}
-            </button>
-
-            <button
-              onClick={() => setCurrentSong((currentSong + 1) % playlist.length)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-full shadow-lg hover:scale-105 transition-transform"
-            >
-              Siguiente
-            </button>
-          </div>
-
-          {/* Lista de canciones */}
-          <ul className="w-full text-center space-y-2">
-            {playlist.map((song, index) => (
-              <li
-                key={index}
-                onClick={() => setCurrentSong(index)}
-                className={`cursor-pointer px-4 py-2 rounded-lg ${
-                  index === currentSong
-                    ? "bg-fuchsia-600 text-white font-bold"
-                    : darkMode
-                    ? "text-white hover:bg-gray-700"
-                    : "text-gray-800 hover:bg-pink-200"
-                } transition`}
+            <div className="flex justify-center gap-4 flex-wrap">
+              <button
+                onClick={() =>
+                  setCurrentSong((currentSong - 1 + playlist.length) % playlist.length)
+                }
+                className="btn"
               >
-                {index === currentSong ? "▶ " : ""} {song.name}
-              </li>
-            ))}
-          </ul>
-        </div>
+                ⏮ Anterior
+              </button>
 
-        {/* Dedicatoria romántica */}
-        <div
-          className={`bg-pink-100 bg-opacity-70 p-6 rounded-xl shadow-md max-w-2xl mb-10 ${
-            darkMode ? "bg-gray-800" : ""
-          }`}
-        >
-          <p
-            className={`text-lg italic text-black text-center drop-shadow-sm ${
-              darkMode ? "text-white" : ""
-            }`}
-          >
-            Hey, Eres de esas personas que deberían tener su propio premio por ser increíble😎✨ <br />
-            Gracias por la amistad, las risas y hasta por aguantarme. 💖😄
-          </p>
-        </div>
+              <button
+                onClick={() => setMuted(!muted)}
+                className="btn"
+              >
+                {muted ? "🔊 Activar" : "🔇 Silenciar"}
+              </button>
 
-        {/* Carrusel de imágenes */}
-        <div className="w-full max-w-2xl mb-10">
-          <div className="w-full h-[500px] bg-white rounded-2xl shadow-lg overflow-hidden">
-            <Slider {...settings}>
-              <div className="w-full h-full">
-                <Image
-                  src="/images/photo1.jpg"
-                  alt="Recuerdo 1"
-                  width={800}
-                  height={800}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-full h-full">
-                <Image
-                  src="/images/photo2.jpg"
-                  alt="Recuerdo 2"
-                  width={800}
-                  height={800}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-full h-full">
-                <Image
-                  src="/images/photo3.jpg"
-                  alt="Recuerdo 3"
-                  width={800}
-                  height={800}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-full h-full">
-                <Image
-                  src="/images/photo4.jpg"
-                  alt="Recuerdo 4"
-                  width={800}
-                  height={800}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-full h-full">
-                <Image
-                  src="/images/photo5.jpg"
-                  alt="Recuerdo 4"
-                  width={800}
-                  height={800}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </Slider>
+              <button
+                onClick={() => setCurrentSong((currentSong + 1) % playlist.length)}
+                className="btn"
+              >
+                Siguiente ⏭
+              </button>
+            </div>
+          </div>
+
+          {/* MENSAJE */}
+          <div className="bg-pink-100/90 rounded-2xl p-6 text-center shadow-md">
+            <p className="text-lg italic text-gray-800 leading-relaxed">
+              Hay personas que no llegan a tu vida por casualidad…  
+              llegan para quedarse, para sumar, para enseñarte que la amistad también
+              puede ser un regalo increíble.  
+              <br /><br />
+              Gracias por cada risa, cada locura y cada momento compartido 💕  
+              Hoy y siempre, esto es solo un pequeño recordatorio de lo especial que eres ✨
+            </p>
           </div>
         </div>
 
-        {/* Botón regresar */}
+        {/* CARRUSEL */}
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-10">
+          <Slider {...settings}>
+            {[1,2,3,4,5].map((n) => (
+              <Image
+                key={n}
+                src={`/images/photo${n}.jpg`}
+                alt={`Recuerdo ${n}`}
+                width={900}
+                height={900}
+                className="w-full h-[500px] object-cover"
+              />
+            ))}
+          </Slider>
+        </div>
+
+        {/* BOTÓN */}
         <Link
           href="/"
-          className="mb-10 px-6 py-3 bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition"
+          className="inline-block mb-10 px-8 py-4 bg-white text-fuchsia-600 font-bold rounded-full shadow-lg hover:scale-105 transition"
         >
-          Volver al inicio
+          ⬅ Volver al inicio
         </Link>
 
-        {/* Footer */}
-        <footer className="bg-gray-800 text-white text-center py-4 w-full">
-          😃💖Con amor.. dev<span className="font-bold">LAAT💻🚀</span>
+        <footer className="text-white text-center mb-6 opacity-90">
+          💖 Hecho con amor por <b>devLAAT 🚀</b>
         </footer>
       </div>
+
+      {/* Animación */}
+      <style jsx>{`
+        .btn {
+          padding: 12px 20px;
+          background: linear-gradient(to right, #ec4899, #ef4444);
+          color: white;
+          border-radius: 999px;
+          font-weight: bold;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+          transition: transform 0.2s;
+        }
+        .btn:hover {
+          transform: scale(1.08);
+        }
+        @keyframes float {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-120vh); }
+        }
+        .animate-float {
+          animation: float 12s linear infinite;
+        }
+      `}</style>
     </div>
   );
-}
+    }
